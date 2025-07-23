@@ -23,4 +23,6 @@ chmod +x clean_install.sh
 
 Перейдите по адресу `https://{EXTERNAL_IP_ADDRESS}/minio/ui` и, если все успешно, вы увидите страницу входа, используйте логин и пароль из файла `.env`
 
+Поскольку в сервисе есть настроенный reverse proxy, для внешних подключей MinIO доступен по `{EXTERNAL_IP_ADDRESS}`, а для локально сети обращение может быть по `{INTERNAL_SERVER_NAME}`. Ссылка на файл в бакете также по умолчанию копируется с доменным именем из `{INTERNAL_SERVER_NAME}`, но вы самостоятельно можете его заменить на `{EXTERNAL_IP_ADDRESS}` и это будет работать.
+
 ##### Автор - https://github.com/marcusaure1ius
