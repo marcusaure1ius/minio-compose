@@ -1,0 +1,37 @@
+server {
+    listen 443 ssl;
+
+    server_name ${INTERNAL_SERVER_NAME} ${EXTERNAL_IP_ADDRESS};
+
+    ssl_certificate /etc/nginx/certs/${INTERNAL_SERVER_NAME}.crt;
+    ssl_certificate_key /etc/nginx/certs/${INTERNAL_SERVER_NAME}.key;
+
+    ignore_invalid_headers off;
+    client_max_body_size 0;
+
+    proxy_buffering off;
+    proxy_request_buffering off;
+    proxy_set_header Host $http_host;
+    
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    location /minio/ui/ {
+        rewrite /minio/ui/(.*) /$1 break;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_pass http://minio:9001;
+    }
+
+    location / {
+        proxy_pass http://minio:9000;
+    }
+}
+
+server {
+    listen 80;
+    server_name ${INTERNAL_SERVER_NAME} ${EXTERNAL_IP_ADDRESS};
+    return 301 https://$host$request_uri;
+}
