@@ -1,6 +1,6 @@
 services:
   minio:
-    image: bitnami/minio:2024.7.26
+    image: bitnamilegacy/minio:2024.7.26
     hostname: ${INTERNAL_SERVER_NAME}
     container_name: minio_service
     environment:
@@ -21,21 +21,3 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
-
-  nginx:
-    image: nginx:latest
-    container_name: nginx_service
-    env_file: .env
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/templates:ro
-      - ./nginx/certs:/etc/nginx/certs
-    environment:
-      - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/conf.d
-      - INTERNAL_SERVER_NAME=${INTERNAL_SERVER_NAME}
-      - EXTERNAL_IP_ADDRESS=${EXTERNAL_IP_ADDRESS}
-    ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - minio
-    restart: always
