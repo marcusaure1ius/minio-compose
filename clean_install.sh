@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+# Определяем, что доступно: docker compose или docker-compose
+if docker compose version >/dev/null 2>&1; then
+    DC="docker compose"
+elif docker-compose version >/dev/null 2>&1; then
+    DC="docker-compose"
+else
+    echo "Ошибка: docker compose не найден в системе"
+    exit 1
+fi
+
 source .env
 
 # 1. Удаляем папки
@@ -16,4 +26,4 @@ sudo chown -R 1001:1001 ./minio_data*
 # 3. Стартуем контейнеры
 echo "Starting containers..."
 
-docker compose down --volumes --remove-orphans && docker compose up -d
+$DC down --volumes --remove-orphans && $DC up -d
